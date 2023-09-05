@@ -1,6 +1,13 @@
 # rss-to-discord
 An RSS feed to discord proxy
 
+## How to build
+
+Simply run this command : 
+```bash
+dofigen dofigen.yml && docker build -t rssfeed .
+```
+
 ## Usage
 
 Example of command to run it : 
