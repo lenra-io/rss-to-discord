@@ -43,15 +43,19 @@ while True:
     response = requests.get(RSS_FEED_URL)
     soup = BeautifulSoup(response.content, 'xml')
     items = soup.find_all(ARRAY_TAG)
-    
+
     new_items = []
     for item in items:
         current_item = {}
         for tag in tags:
-            if item[tag].get('type') == 'html':
-                current_item[tag] = BeautifulSoup(item[tag].text, 'lxml').get_text()
-            else:
-                current_item[tag] = item[tag].text
+            item_tag = item.find(tag)
+            if item_tag is not None:
+                if item_tag.get('type') == 'html':
+                    html_text = BeautifulSoup(item_tag.text, 'lxml').get_text()
+                    current_item[tag] = BeautifulSoup(html_text, 'lxml').get_text()
+                else:
+                    current_item[tag] = item_tag.text
+
         if current_item not in posted_items:
             new_items.append(current_item)
         else:
@@ -60,8 +64,8 @@ while True:
     # If bot just started, post only the latest item
     if not posted_items:
         print('First post found')
-        post_to_discord(new_item[0])
-        posted_items.append(new_item[0])
+        post_to_discord(new_items[0])
+        posted_items.append(new_items[0])
     else:
         print('Seen {} new posts'.format(len(new_items)))
         # Post all new items
