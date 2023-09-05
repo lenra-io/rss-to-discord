@@ -1,0 +1,25 @@
+---
+builders:
+- name: builder
+  image: python:latest
+  workdir: /app
+  adds:
+  - "setup.py"
+  - "requirements.txt"
+  script:
+  - python -m pip install -e .
+image: builder
+workdir: /app
+adds:
+- .
+user: 1000
+entrypoint: 
+- python
+cmd:
+- rssfeed.py
+ignores:
+- "**"
+- "!/rssfeed.py"
+- "!/setup.py"
+- "!/requirements.txt"
+
